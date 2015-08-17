@@ -37,6 +37,11 @@ body {
 .loading-bar {
   width: 100%;
 }
+.rule-value-container {
+  max-height: 100px;
+  width: 350px;
+  overflow: auto;
+}
 .tab-content {
   padding-top: 10px;
 }
