@@ -28,9 +28,10 @@ var properties = [{
   },
   filter: {
     type: "string",
-    input: "select",
+    input: "checkbox",
+    vertical: true,
     multiple: true,
-    operators: ["equal", "not_equal", "in"],
+    operators: ["in", "not_in", "equal", "not_equal"],
     values: []
   }
 },
@@ -43,9 +44,10 @@ var properties = [{
   },
   filter: {
     type: "string",
-    input: "select",
+    input: "checkbox",
+    vertical: true,
     multiple: true,
-    operators: ["equal", "not_equal", "in", "not_in"],
+    operators: ["in", "not_in", "equal", "not_equal"],
     values: []
   }
 },
