@@ -89,6 +89,9 @@ body {
   body {
     overflow-y: auto;
   }
+  .fixed-table-toolbar {
+    display: none;
+  }
 }
 @media print {
   .navbar {
