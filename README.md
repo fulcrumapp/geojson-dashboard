@@ -13,10 +13,18 @@ A configurable framework for building a geographic "data dashboard" from a GeoJS
 
 ## Screenshots
 
+Split screen view
+
 ![Map](https://raw.githubusercontent.com/fulcrumapp/geojson-dashboard/gh-pages/screenshots/map.png)
+
+Feature Info popup
 
 ![Info](https://raw.githubusercontent.com/fulcrumapp/geojson-dashboard/gh-pages/screenshots/info.png)
 
+Interactive charts
+
 ![Charts](https://raw.githubusercontent.com/fulcrumapp/geojson-dashboard/gh-pages/screenshots/charts.png)
+
+SQL query filters
 
 ![Filter](https://raw.githubusercontent.com/fulcrumapp/geojson-dashboard/gh-pages/screenshots/filter.png)
