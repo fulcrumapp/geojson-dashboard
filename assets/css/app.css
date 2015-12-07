@@ -92,6 +92,9 @@ body {
   .fixed-table-toolbar {
     display: none;
   }
+  .fixed-table-container {
+    padding-bottom: 15px !important;
+  }
 }
 @media print {
   .navbar {
