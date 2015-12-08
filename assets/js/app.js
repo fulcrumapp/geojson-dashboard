@@ -1,6 +1,6 @@
 var config = {
   geojson: "https://web.fulcrumapp.com/shares/a5c8e07368efde43.geojson",
-  title: "Congress Park Trees",
+  title: "CongressPark Trees",
   layerName: "Trees",
   hoverProperty: "species_sim",
   sortProperty: "dbh_2012_inches_diameter_at_breast_height_46",
