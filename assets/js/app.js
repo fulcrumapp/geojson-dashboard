@@ -1,15 +1,15 @@
 var config = {
-  geojson: "https://web.fulcrumapp.com/shares/a5c8e07368efde43.geojson",
-  title: "Congress Park Trees",
-  layerName: "Trees",
-  hoverProperty: "species_sim",
-  sortProperty: "dbh_2012_inches_diameter_at_breast_height_46",
+  geojson: "https://gist.githubusercontent.com/JJediny/b238fc15e3b31a2e3432/raw/3d73dbd7d4c950c8e85fdb7485567e84eca90772/CitizenScienceandCrowdsourcing_WWilson.geojson",
+  title: "Federal Citizen Science and Crowdsourcing Projects",
+  layerName: "Projects",
+  hoverProperty: "project_name",
+  sortProperty: "agency_sponsor",
   sortOrder: "desc"
 };
 
 var properties = [{
-  value: "fulcrum_id",
-  label: "Fulcrum ID",
+  value: "project_topic",
+  label: "Topic",
   table: {
     visible: false,
     sortable: true
@@ -18,8 +18,7 @@ var properties = [{
     type: "string"
   },
   info: false
-},
-{
+}, {
   value: "status",
   label: "Status",
   table: {
@@ -34,8 +33,7 @@ var properties = [{
     operators: ["in", "not_in", "equal", "not_equal"],
     values: []
   }
-},
-{
+}, {
   value: "congress_park_inventory_zone",
   label: "Inventory Zone",
   table: {
@@ -50,8 +48,7 @@ var properties = [{
     operators: ["in", "not_in", "equal", "not_equal"],
     values: []
   }
-},
-{
+}, {
   value: "2012_inventory_number",
   label: "Inventory Number",
   table: {
@@ -61,8 +58,7 @@ var properties = [{
   filter: {
     type: "integer"
   }
-},
-{
+}, {
   value: "species_sim",
   label: "Species",
   table: {
@@ -72,8 +68,7 @@ var properties = [{
   filter: {
     type: "string"
   }
-},
-{
+}, {
   value: "circumference_2012_inches_at_breast_height_",
   label: "Circumference (inches)",
   table: {
@@ -83,8 +78,7 @@ var properties = [{
   filter: {
     type: "integer"
   }
-},
-{
+}, {
   value: "dbh_2012_inches_diameter_at_breast_height_46",
   label: "DBH (inches)",
   table: {
@@ -94,8 +88,7 @@ var properties = [{
   filter: {
     type: "integer"
   }
-},
-{
+}, {
   value: "plaque",
   label: "Plaque",
   table: {
@@ -111,8 +104,7 @@ var properties = [{
       "no": "No"
     }
   }
-},
-{
+}, {
   value: "notes_other_information",
   label: "Notes",
   table: {
@@ -122,8 +114,7 @@ var properties = [{
   filter: {
     type: "string"
   }
-},
-{
+}, {
   value: "photos_url",
   label: "Photos",
   table: {
@@ -137,81 +128,114 @@ var properties = [{
 function drawCharts() {
   // Status
   $(function() {
-    var result = alasql("SELECT status AS label, COUNT(*) AS total FROM ? GROUP BY status", [features]);
+    var result = alasql(
+      "SELECT status AS label, COUNT(*) AS total FROM ? GROUP BY status", [
+        features
+      ]);
     var columns = $.map(result, function(status) {
-      return [[status.label, status.total]];
+      return [
+        [status.label, status.total]
+      ];
     });
     var chart = c3.generate({
-        bindto: "#status-chart",
-        data: {
-          type: "pie",
-          columns: columns
-        }
+      bindto: "#status-chart",
+      data: {
+        type: "pie",
+        columns: columns
+      }
     });
   });
 
   // Zones
   $(function() {
-    var result = alasql("SELECT congress_park_inventory_zone AS label, COUNT(*) AS total FROM ? GROUP BY congress_park_inventory_zone", [features]);
+    var result = alasql(
+      "SELECT congress_park_inventory_zone AS label, COUNT(*) AS total FROM ? GROUP BY congress_park_inventory_zone", [
+        features
+      ]);
     var columns = $.map(result, function(zone) {
-      return [[zone.label, zone.total]];
+      return [
+        [zone.label, zone.total]
+      ];
     });
     var chart = c3.generate({
-        bindto: "#zone-chart",
-        data: {
-          type: "pie",
-          columns: columns
-        }
+      bindto: "#zone-chart",
+      data: {
+        type: "pie",
+        columns: columns
+      }
     });
   });
 
   // Size
   $(function() {
     var sizes = [];
-    var regeneration = alasql("SELECT 'Regeneration (< 3\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) < 3", [features]);
-    var sapling = alasql("SELECT 'Sapling/poles (1-9\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 1 AND 9", [features]);
-    var small = alasql("SELECT 'Small trees (10-14\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 10 AND 14", [features]);
-    var medium = alasql("SELECT 'Medium trees (15-19\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 15 AND 19", [features]);
-    var large = alasql("SELECT 'Large trees (20-29\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 20 AND 29", [features]);
-    var giant = alasql("SELECT 'Giant trees (> 29\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) > 29", [features]);
+    var regeneration = alasql(
+      "SELECT 'Regeneration (< 3\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) < 3", [
+        features
+      ]);
+    var sapling = alasql(
+      "SELECT 'Sapling/poles (1-9\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 1 AND 9", [
+        features
+      ]);
+    var small = alasql(
+      "SELECT 'Small trees (10-14\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 10 AND 14", [
+        features
+      ]);
+    var medium = alasql(
+      "SELECT 'Medium trees (15-19\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 15 AND 19", [
+        features
+      ]);
+    var large = alasql(
+      "SELECT 'Large trees (20-29\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) BETWEEN 20 AND 29", [
+        features
+      ]);
+    var giant = alasql(
+      "SELECT 'Giant trees (> 29\")' AS category, COUNT(*) AS total FROM ? WHERE CAST(dbh_2012_inches_diameter_at_breast_height_46 as INT) > 29", [
+        features
+      ]);
     sizes.push(regeneration, sapling, small, medium, large, giant);
     var columns = $.map(sizes, function(size) {
-      return [[size[0].category, size[0].total]];
+      return [
+        [size[0].category, size[0].total]
+      ];
     });
     var chart = c3.generate({
-        bindto: "#size-chart",
-        data: {
-          type: "pie",
-          columns: columns
-        }
+      bindto: "#size-chart",
+      data: {
+        type: "pie",
+        columns: columns
+      }
     });
   });
 
   // Species
   $(function() {
-    var result = alasql("SELECT species_sim AS label, COUNT(*) AS total FROM ? GROUP BY species_sim ORDER BY label ASC", [features]);
+    var result = alasql(
+      "SELECT species_sim AS label, COUNT(*) AS total FROM ? GROUP BY species_sim ORDER BY label ASC", [
+        features
+      ]);
     var chart = c3.generate({
-        bindto: "#species-chart",
-        size: {
-          height: 2000
+      bindto: "#species-chart",
+      size: {
+        height: 2000
+      },
+      data: {
+        json: result,
+        keys: {
+          x: "label",
+          value: ["total"]
         },
-        data: {
-          json: result,
-          keys: {
-            x: "label",
-            value: ["total"]
-          },
-          type: "bar"
-        },
-        axis: {
-          rotated: true,
-          x: {
-            type: "category"
-          }
-        },
-        legend: {
-          show: false
+        type: "bar"
+      },
+      axis: {
+        rotated: true,
+        x: {
+          type: "category"
         }
+      },
+      legend: {
+        show: false
+      }
     });
   });
 }
@@ -234,20 +258,20 @@ function buildConfig() {
     formatter: function(value, row, index) {
       return [
         '<a class="zoom" href="javascript:void(0)" title="Zoom" style="margin-right: 10px;">',
-          '<i class="fa fa-search-plus"></i>',
+        '<i class="fa fa-search-plus"></i>',
         '</a>',
         '<a class="identify" href="javascript:void(0)" title="Identify">',
-          '<i class="fa fa-info-circle"></i>',
+        '<i class="fa fa-info-circle"></i>',
         '</a>'
       ].join("");
     },
     events: {
-      "click .zoom": function (e, value, row, index) {
+      "click .zoom": function(e, value, row, index) {
         map.fitBounds(featureLayer.getLayer(row.leaflet_stamp).getBounds());
         highlightLayer.clearLayers();
         highlightLayer.addData(featureLayer.getLayer(row.leaflet_stamp).toGeoJSON());
       },
-      "click .identify": function (e, value, row, index) {
+      "click .identify": function(e, value, row, index) {
         identifyFeature(row.leaflet_stamp);
         highlightLayer.clearLayers();
         highlightLayer.addData(featureLayer.getLayer(row.leaflet_stamp).toGeoJSON());
@@ -262,12 +286,10 @@ function buildConfig() {
     if (value.filter) {
       var id;
       if (value.filter.type == "integer") {
-        id = "cast(properties->"+ value.value +" as int)";
-      }
-      else if (value.filter.type == "double") {
-        id = "cast(properties->"+ value.value +" as double)";
-      }
-      else {
+        id = "cast(properties->" + value.value + " as int)";
+      } else if (value.filter.type == "double") {
+        id = "cast(properties->" + value.value + " as double)";
+      } else {
         id = "properties->" + value.value;
       }
       filters.push({
@@ -278,12 +300,14 @@ function buildConfig() {
         if (filters[index]) {
           // If values array is empty, fetch all distinct values
           if (key == "values" && val.length === 0) {
-            alasql("SELECT DISTINCT(properties->"+value.value+") AS field FROM ? ORDER BY field ASC", [geojson.features], function(results){
-              distinctValues = [];
-              $.each(results, function(index, value) {
-                distinctValues.push(value.field);
+            alasql("SELECT DISTINCT(properties->" + value.value +
+              ") AS field FROM ? ORDER BY field ASC", [geojson.features],
+              function(results) {
+                distinctValues = [];
+                $.each(results, function(index, value) {
+                  distinctValues.push(value.field);
+                });
               });
-            });
             filters[index].values = distinctValues;
           } else {
             filters[index][key] = val;
@@ -298,8 +322,8 @@ function buildConfig() {
         title: value.label
       });
       $.each(value.table, function(key, val) {
-        if (table[index+1]) {
-          table[index+1][key] = val;
+        if (table[index + 1]) {
+          table[index + 1][key] = val;
         }
       });
     }
@@ -310,23 +334,25 @@ function buildConfig() {
 }
 
 // Basemap Layers
-var mapquestOSM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  subdomains: ["otile1", "otile2", "otile3", "otile4"],
-  attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
-});
+var mapquestOSM = L.tileLayer(
+  "http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    subdomains: ["otile1", "otile2", "otile3", "otile4"],
+    attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
+  });
 
-var mapquestHYB = L.layerGroup([L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
-  maxZoom: 18,
-  subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"]
-}), L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png", {
+var mapquestHYB = L.layerGroup([L.tileLayer(
+  "http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
+    maxZoom: 18,
+    subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"]
+  }), L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png", {
   maxZoom: 19,
   subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
   attribution: 'Labels courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'
 })]);
 
 var highlightLayer = L.geoJson(null, {
-  pointToLayer: function (feature, latlng) {
+  pointToLayer: function(feature, latlng) {
     return L.circleMarker(latlng, {
       radius: 5,
       color: "#FFF",
@@ -337,7 +363,7 @@ var highlightLayer = L.geoJson(null, {
       clickable: false
     });
   },
-  style: function (feature) {
+  style: function(feature) {
     return {
       color: "#00FFFF",
       weight: 2,
@@ -351,14 +377,15 @@ var highlightLayer = L.geoJson(null, {
 
 var featureLayer = L.geoJson(null, {
   filter: function(feature, layer) {
-    return feature.geometry.coordinates[0] !== 0 && feature.geometry.coordinates[1] !== 0;
+    return feature.geometry.coordinates[0] !== 0 && feature.geometry.coordinates[
+      1] !== 0;
   },
   /*style: function (feature) {
     return {
       color: feature.properties.color
     };
   },*/
-  pointToLayer: function (feature, latlng) {
+  pointToLayer: function(feature, latlng) {
     if (feature.properties && feature.properties["marker-color"]) {
       markerColor = feature.properties["marker-color"];
     } else {
@@ -373,21 +400,22 @@ var featureLayer = L.geoJson(null, {
       fillOpacity: 1
     });
   },
-  onEachFeature: function (feature, layer) {
+  onEachFeature: function(feature, layer) {
     if (feature.properties) {
       layer.on({
-        click: function (e) {
+        click: function(e) {
           identifyFeature(L.stamp(layer));
           highlightLayer.clearLayers();
-          highlightLayer.addData(featureLayer.getLayer(L.stamp(layer)).toGeoJSON());
+          highlightLayer.addData(featureLayer.getLayer(L.stamp(
+            layer)).toGeoJSON());
         },
-        mouseover: function (e) {
+        mouseover: function(e) {
           if (config.hoverProperty) {
             $(".info-control").html(feature.properties[config.hoverProperty]);
             $(".info-control").show();
           }
         },
-        mouseout: function (e) {
+        mouseout: function(e) {
           $(".info-control").hide();
         }
       });
@@ -396,7 +424,7 @@ var featureLayer = L.geoJson(null, {
 });
 
 // Fetch the GeoJSON file
-$.getJSON(config.geojson, function (data) {
+$.getJSON(config.geojson, function(data) {
   geojson = data;
   features = $.map(geojson.features, function(feature) {
     return feature.properties;
@@ -421,12 +449,12 @@ var info = L.control({
 });
 
 // Custom info hover control
-info.onAdd = function (map) {
+info.onAdd = function(map) {
   this._div = L.DomUtil.create("div", "info-control");
   this.update();
   return this._div;
 };
-info.update = function (props) {
+info.update = function(props) {
   this._div.innerHTML = "";
 };
 info.addTo(map);
@@ -450,7 +478,7 @@ var layerControl = L.control.layers(baseLayers, overlayLayers, {
 }).addTo(map);
 
 // Filter table to only show features in current map bounds
-map.on("moveend", function (e) {
+map.on("moveend", function(e) {
   syncTable();
 });
 
@@ -459,9 +487,10 @@ map.on("click", function(e) {
 });
 
 // Table formatter to make links clickable
-function urlFormatter (value, row, index) {
-  if (typeof value == "string" && (value.indexOf("http") === 0 || value.indexOf("https") === 0)) {
-    return "<a href='"+value+"' target='_blank'>"+value+"</a>";
+function urlFormatter(value, row, index) {
+  if (typeof value == "string" && (value.indexOf("http") === 0 || value.indexOf(
+      "https") === 0)) {
+    return "<a href='" + value + "' target='_blank'>" + value + "</a>";
   }
 }
 
@@ -478,11 +507,11 @@ function applyFilter() {
   if (sql.length > 0) {
     query += " WHERE " + sql;
   }
-  alasql(query, [geojson.features], function(features){
-		featureLayer.clearLayers();
-		featureLayer.addData(features);
-		syncTable();
-	});
+  alasql(query, [geojson.features], function(features) {
+    featureLayer.clearLayers();
+    featureLayer.addData(features);
+    syncTable();
+  });
 }
 
 function buildTable() {
@@ -501,17 +530,17 @@ function buildTable() {
     showColumns: true,
     showToggle: true,
     columns: table,
-    onClickRow: function (row) {
+    onClickRow: function(row) {
       // do something!
     },
-    onDblClickRow: function (row) {
+    onDblClickRow: function(row) {
       // do something!
     }
   });
 
   map.fitBounds(featureLayer.getBounds());
 
-  $(window).resize(function () {
+  $(window).resize(function() {
     $("#table").bootstrapTable("resetView", {
       height: $("#table-container").height()
     });
@@ -520,7 +549,7 @@ function buildTable() {
 
 function syncTable() {
   tableFeatures = [];
-  featureLayer.eachLayer(function (layer) {
+  featureLayer.eachLayer(function(layer) {
     layer.feature.properties.leaflet_stamp = L.stamp(layer);
     if (map.hasLayer(featureLayer)) {
       if (map.getBounds().contains(layer.getBounds())) {
@@ -531,26 +560,31 @@ function syncTable() {
   $("#table").bootstrapTable("load", JSON.parse(JSON.stringify(tableFeatures)));
   var featureCount = $("#table").bootstrapTable("getData").length;
   if (featureCount == 1) {
-    $("#feature-count").html($("#table").bootstrapTable("getData").length + " visible feature");
+    $("#feature-count").html($("#table").bootstrapTable("getData").length +
+      " visible feature");
   } else {
-    $("#feature-count").html($("#table").bootstrapTable("getData").length + " visible features");
+    $("#feature-count").html($("#table").bootstrapTable("getData").length +
+      " visible features");
   }
 }
 
 function identifyFeature(id) {
   var featureProperties = featureLayer.getLayer(id).feature.properties;
-  var content = "<table class='table table-striped table-bordered table-condensed'>";
+  var content =
+    "<table class='table table-striped table-bordered table-condensed'>";
   $.each(featureProperties, function(key, value) {
     if (!value) {
       value = "";
     }
-    if (typeof value == "string" && (value.indexOf("http") === 0 || value.indexOf("https") === 0)) {
+    if (typeof value == "string" && (value.indexOf("http") === 0 || value.indexOf(
+        "https") === 0)) {
       value = "<a href='" + value + "' target='_blank'>" + value + "</a>";
     }
     $.each(properties, function(index, property) {
       if (key == property.value) {
         if (property.info !== false) {
-          content += "<tr><th>" + property.label + "</th><td>" + value + "</td></tr>";
+          content += "<tr><th>" + property.label + "</th><td>" + value +
+            "</td></tr>";
         }
       }
     });
@@ -685,6 +719,6 @@ $("#download-pdf-btn").click(function() {
   return false;
 });
 
-$("#chartModal").on("shown.bs.modal", function (e) {
+$("#chartModal").on("shown.bs.modal", function(e) {
   drawCharts();
 });
